@@ -7,11 +7,10 @@ begin
     gem.name = "gemfire-jruby"
     gem.summary = %Q{TODO: one-line summary of your gem}
     gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "alanmckean@me.com"
+    gem.email = "alan.mckean@gemstone.com"
     gem.homepage = "http://github.com/amckean/gemfire-jruby"
-    gem.authors = ["amckean"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.authors = ["Alan McKean"]
+    gem.add_dependency "activesupport", ">= 0"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
