@@ -1,4 +1,4 @@
-require 'active_support'
+require 'activesupport'
 
 import java.lang.System
 import java.util.Properties
@@ -11,28 +11,32 @@ include Java
 module ActiveSupport
   module Cache
     class GemFire < Store
+      class << self; attr_accessor :instance; end
+      
       class CacheException  < StandardError; end 
   
+    	private_class_method :new
+      
+    	def GemFire.getInstance(hashOfGemFireProperties)
+      	self.instance ||= new(hashOfGemFireProperties)
+      end
+
       def initialize(hashOfGemFireProperties)
         properties = Properties.new
         hashOfGemFireProperties.each do |key, value|
           properties.setProperty(key, value)
         end
-        @system = DistributedSystem.connect(properties)
-      	@cache = CacheFactory.create(@system)
-      	@region = @cache.getRegion(System.getProperty("cachingRegionName") || "default")
+        system = DistributedSystem.connect(properties)
+      	cache = CacheFactory.create(system)
+      	@region = cache.getRegion(System.getProperty("cachingRegionName") || "default")
       rescue CacheException => e
           logger.error("GemfireCache Creation Error (#{e}): #{e.message}")
           false
     	end
 
-      def region
-        @region
-      end
-
       def read(key)
         super
-        self.region.get(key)
+        @region.get(key)
       rescue CacheException => e
           logger.error("GemfireCache Error (#{e}): #{e.message}")
           false
@@ -40,7 +44,7 @@ module ActiveSupport
 
       def write(key, value)
         super
-        self.region.put(key, value)
+        @region.put(key, value)
         true
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
@@ -49,7 +53,7 @@ module ActiveSupport
 
       def delete(key)
         super
-        self.region.destroy(key)
+        @region.destroy(key)
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
         false
@@ -57,17 +61,17 @@ module ActiveSupport
 
       def keys
         super
-        self.region.keys.to_a
+        @region.keys.to_a
       end
 
       def exist?(key)
         super
-        self.region.containsKeyOnServer(key)
+        @region.containsKeyOnServer(key)
       end
 
       def clear
         super
-        self.region.clear
+        @region.clear
         true
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
