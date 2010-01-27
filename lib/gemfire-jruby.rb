@@ -75,13 +75,11 @@ module ActiveSupport
 
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
-        super
         @region.containsKey(key)
       end
 
       # Delete all entries (key=>value pairs) from the GemFire cache. Returns a JRuby Hash.
       def clear
-        super
         @region.clear
         true
       rescue CacheException => e
