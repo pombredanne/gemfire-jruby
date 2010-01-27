@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: ActiveSupport::Cache::GemFire</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">ActiveSupport::Cache::GemFire</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/gemfire-jruby_rb.html">
+                lib/gemfire-jruby.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Store
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+<a href="GemFire.html">ActiveSupport::Cache::GemFire</a> creates a
+Singleton object that provides access to a <a
+href="GemFire.html">GemFire</a> cache.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000008">clear</a>&nbsp;&nbsp;
+      <a href="#M000010">decrement</a>&nbsp;&nbsp;
+      <a href="#M000005">delete</a>&nbsp;&nbsp;
+      <a href="#M000011">delete_matched</a>&nbsp;&nbsp;
+      <a href="#M000007">exist?</a>&nbsp;&nbsp;
+      <a href="#M000001">getInstance</a>&nbsp;&nbsp;
+      <a href="#M000009">increment</a>&nbsp;&nbsp;
+      <a href="#M000006">keys</a>&nbsp;&nbsp;
+      <a href="#M000002">new</a>&nbsp;&nbsp;
+      <a href="#M000003">read</a>&nbsp;&nbsp;
+      <a href="#M000004">write</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Class <a href="GemFire/CacheException.html" class="link">ActiveSupport::Cache::GemFire::CacheException</a><br />
+
+    </div>
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">instance</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000001.html');return false;">
+          <span class="method-name">getInstance</span><span class="method-args">(hashOfGemFireProperties)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="GemFire.html">GemFire</a> is a Singleton. <a
+href="GemFire.html#M000002">new</a>() is hidden, so use <a
+href="GemFire.html#M000001">getInstance</a>() to both create the <a
+href="GemFire.html">GemFire</a> instance and to launch <a
+href="GemFire.html">GemFire</a>.
+</p>
+<pre>
+  There is an optional Hash that you can use to override any GemFire properties'.
+  For example, GemFire.getInstance('locators' =&gt; 'localhost[10355]', 'mcast-port' =&gt; '0')
+</pre>
+<p>
+Since it is a Singleton, successive calls to <a
+href="GemFire.html#M000001">GemFire.getInstance</a>() will return the
+single instance that was instantiated by the first call.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000002.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(hashOfGemFireProperties)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000008.html');return false;">
+          <span class="method-name">clear</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Delete all entries (key=&gt;value pairs) from the <a
+href="GemFire.html">GemFire</a> cache. Returns a JRuby Hash.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000010.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000010.html');return false;">
+          <span class="method-name">decrement</span><span class="method-args">(key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Not implemented by <a href="GemFire.html">GemFire</a>. Raises an exception
+when called.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000005.html');return false;">
+          <span class="method-name">delete</span><span class="method-args">(key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Delete the entry stored in the <a href="GemFire.html">GemFire</a> cache at
+<em>key</em>. <em>key</em> can be any JRuby object. Returns the value that
+was deleted.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000011.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000011.html');return false;">
+          <span class="method-name">delete_matched</span><span class="method-args">(matcher)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Not implemented by <a href="GemFire.html">GemFire</a>. Raises an exception
+when called.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000007.html');return false;">
+          <span class="method-name">exist?</span><span class="method-args">(key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Check if there is an entry accessible by <em>key</em> in the <a
+href="GemFire.html">GemFire</a> cache. Returns a boolean.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000009.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000009.html');return false;">
+          <span class="method-name">increment</span><span class="method-args">(key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Not implemented by <a href="GemFire.html">GemFire</a>. Raises an exception
+when called.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000006.html');return false;">
+          <span class="method-name">keys</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Fetch all of the <a href="GemFire.html#M000006">keys</a> currently in the
+<a href="GemFire.html">GemFire</a> cache. Returns a JRuby Array of JRuby
+objects.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000003.html');return false;">
+          <span class="method-name">read</span><span class="method-args">(key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Read a value from the <a href="GemFire.html">GemFire</a> cache.
+<em>key</em> can be any JRuby object. Returns the value stored at
+<em>key</em>.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000004.html');return false;">
+          <span class="method-name">write</span><span class="method-args">(key, value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Write a value to the <a href="GemFire.html">GemFire</a> cache. <em>key</em>
+is used to <a href="GemFire.html#M000003">read</a> the value from the cache
+and can be any JRuby object. Returns the value that was stored at
+<em>key</em>.
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

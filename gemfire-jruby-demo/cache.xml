@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE cache PUBLIC '-//GemStone Systems, Inc.//GemFire Declarative Cache 6.0//EN' 'http://www.gemstone.com/dtd/cache6_0.dtd'>
+<cache>
+	<region name='default'>
+		<region-attributes>
+		</region-attributes>
+	</region>
+</cache>
