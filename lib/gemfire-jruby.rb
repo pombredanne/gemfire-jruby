@@ -37,7 +37,6 @@ module ActiveSupport
       	@region = cache.getRegion(System.getProperty("cachingRegionName") || "default")
       rescue CacheException => e
           logger.error("GemfireCache Creation Error (#{e}): #{e.message}")
-          false
     	end
 
       # Read a value from the GemFire cache. _key_ can be any JRuby object. Returns the value stored at _key_.
@@ -46,17 +45,14 @@ module ActiveSupport
         @region.get(key)
       rescue CacheException => e
           logger.error("GemfireCache Error (#{e}): #{e.message}")
-          false
       end
 
       # Write a value to the GemFire cache. _key_ is used to read the value from the cache and can be any JRuby object. Returns the value that was stored at _key_.
       def write(key, value)
         super
         @region.put(key, value)
-        true
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
-        false
       end
 
       # Delete the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
@@ -65,7 +61,6 @@ module ActiveSupport
         @region.destroy(key)
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
-        false
       end
 
       # Fetch all of the keys currently in the GemFire cache. Returns a JRuby Array of JRuby objects.
@@ -75,16 +70,18 @@ module ActiveSupport
 
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
-        @region.containsKey(key)
+        if @region.getAttributes.getPoolName then
+          @region.containsKey(key)
+        else
+          @region.containsKeyOnServer(key)
+        end
       end
 
       # Delete all entries (key=>value pairs) from the GemFire cache. Returns a JRuby Hash.
       def clear
         @region.clear
-        true
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
-        false
       end
 
       # Not implemented by GemFire. Raises an exception when called.
