@@ -1,4 +1,4 @@
-require 'activesupport'
+require 'active_support'
 
 import java.lang.System
 import java.util.Properties
@@ -76,7 +76,7 @@ module ActiveSupport
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
         super
-        @region.containsKeyOnServer(key)
+        @region.containsKey(key)
       end
 
       # Delete all entries (key=>value pairs) from the GemFire cache. Returns a JRuby Hash.
