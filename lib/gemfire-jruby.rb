@@ -23,8 +23,8 @@ module ActiveSupport
     	#   For example, GemFire.getInstance('locators' => 'localhost[10355]', 'mcast-port' => '0')
     	# Since it is a Singleton, successive calls to GemFire.getInstance() will return the single
     	# instance that was instantiated by the first call.
-    	def GemFire.getInstance(hashOfGemFireProperties)
-      	self.instance ||= new(hashOfGemFireProperties={})
+    	def GemFire.getInstance(hashOfGemFireProperties={})
+      	self.instance ||= new(hashOfGemFireProperties)
       end
 
       def initialize(hashOfGemFireProperties)
@@ -97,6 +97,32 @@ module ActiveSupport
       # Not implemented by GemFire. Raises an exception when called.
       def delete_matched(matcher)
         raise "Not supported by Gemfire"
+      end
+      
+      def toList(selectResults)
+      	results = []
+      	iterator = selectResults.iterator
+      	while(iterator.hasNext) {
+      		results << iterator.next
+      	end
+      	results	
+      end
+
+      def selectResults?(javaObject)
+        found = false
+        javaObject.getClass.getInterfaces.each { |i|
+          if (i.to_s == 'interface com.gemstone.gemfire.cache.query.SelectResults') then
+              found = true
+          end
+        }
+        found
+      end
+
+      def query(queryString)
+        queryService = @region.getAttributes.getPoolName ? pool.getQueryService : cache.getQueryService
+        query = queryService.newQuery(queryString)
+        result = query.execute
+        selectResults?(result) ? toList(result) : result
       end
     end
   end
