@@ -1,0 +1,29 @@
+Role must be specified as either 'client' or 'server'
+ActiveSupport::Cache::GemFire.getInstance('server', {...})
+
+Universal Required Options
+These options are required for both clients and servers. The 'locators' is used by servers to join its peers. It is used by a client's pool to connect to the server tier.
+
+	'region-name' == nameString
+	'locators' == addressOrHostname:portNumber
+
+Example:
+ActiveSupport::Cache::GemFire.getInstance('server', {'region-name'=>'data, 'locators=>localhost:10355, , ...})
+
+Client Options
+	'caching-enabled' => 'true' || 'false' ... default is 'false'
+
+Server Options
+	'cacheserver-port'=> 40404 					# required			
+	'data-policy' => 'partition' || 'replicate' # default is replicate
+	'redundancy-level' => '0..3' 				# applicable only if 'data-policy' is 'partition'
+
+Example of Creating a Server
+require 'rubygems'
+require 'lib/gemfire-jruby'
+server = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>'localhost:10355', 'region-name'=>'data', 'cacheserver-port'=>40404})
+
+require 'rubygems'
+require 'lib/gemfire-jruby'
+client = ActiveSupport::Cache::GemFire.getInstance('client', {'locators'=>'localhost:10355', 'region-name'=>'data'})
+

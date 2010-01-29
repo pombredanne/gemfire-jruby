@@ -47,7 +47,7 @@ module ActiveSupport
       	  # it's a server
           cacheServer = @cache.addCacheServer
           cacheServer.setPort(options['cacheserver-port'])
-          cacheServer.start
+#          cacheServer.start
       	  regionAttributes = get_server_attributes(options)
       	end 
       	@region = @cache.createRegion(options['region-name'], regionAttributes)
@@ -74,22 +74,24 @@ module ActiveSupport
       # Delete the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
       def delete(key)
         super
-        @region.destroy(key)
+        @region.destroy(Marshal.dump(key))
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
       end
 
       # Fetch all of the keys currently in the GemFire cache. Returns a JRuby Array of JRuby objects.
       def keys
-        @region.keys.to_a
+        result = []
+        @region.keys.each do |k| result << Marshal.load(k) end
+        result
       end
 
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
         if @region.getAttributes.getPoolName then
-          @region.containsKey(key)
+          @region.containsKey(Marshal.dump(key))
         else
-          @region.containsKeyOnServer(key)
+          @region.containsKeyOnServer(Marshal.dump(key))
         end
       end
 
@@ -184,7 +186,6 @@ module ActiveSupport
   	    regionAttributes = attributesFactory.create
       end
       
-      public
       def toList(selectResults)
       	results = []
       	iterator = selectResults.iterator
@@ -202,15 +203,6 @@ module ActiveSupport
           end
         }
         found
-      end
-
-      public
-      # Query the cache. Optional serverData arg allows querying local client cache
-      def query(queryString, serverData=true)
-        queryService = @region.getAttributes.getPoolName && serverData ? PoolManager.find(@region).getQueryService : @cache.getQueryService
-        query = queryService.newQuery(queryString)
-        result = query.execute
-        selectResults?(result) ? toList(result) : result
       end
     end
   end

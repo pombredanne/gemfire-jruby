@@ -1,0 +1,36 @@
+INSTALLING RUBY
+
+1) Installing JRuby ... skip this if you already have JRuby instaled
+I will assume that you have a JDK and GemFire already installed (1.5 or later). Rather than duplicate information that is already written up on the web, follow these instructions:
+http://jruby.org/getting-started
+
+When you are running the JRuby installer, check the box for setting up your PATH. Then you will be able to run JRuby scripts from other places on your command line. Test it by running 'jirb' (that's the JRuby shell from somewhere other than the JRuby bin directory. To exit the shell, type 'exit'
+
+INSTALLING RUBY ON RAILS
+
+1) Since we have installed JRuby, installing Rails is dead simple:
+C:\> jgem install rails
+
+
+INSTALLING THE GEMFIRE-JRUBY GEM
+
+1) Installing the gemfire-jruby gem ... Once JRuby is installed, you can use the 'jgem' program that comes with JRuby to get the gemfire-jruby gem that I published to the web (gemcutter.com ... the standard place to publish gems to). Run:
+jgem install gemfire-jruby
+
+That will download the gemfire-jruby gem and its documentation and install it among the other JRuby gems.
+
+2) Check to see that it is installed:
+C:\> jgem list
+
+You should see the gemfire-jruby gem in the list of installed gems
+
+3) To test the installation, run the JRuby shell (jirb):
+C:\:> jirb
+
+4) When the shell opens, use Ruby syntax to load the require files into the shell:
+
+irb(main):001:0> require 'rubygems'
+=> true
+irb(main):002:0> require 'gemfire-jruby'
+DEPRECATION WARNING ... blah, blah, blah
+=> true
