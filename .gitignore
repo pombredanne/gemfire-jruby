@@ -19,3 +19,5 @@ rdoc
 pkg
 
 ## PROJECT::SPECIFIC
+gemfire-jruby-demo/log/development.log
+gemfire-jruby-0.0.1.gem

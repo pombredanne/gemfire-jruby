@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{gemfire-jruby}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alan McKean"]
-  s.date = %q{2010-01-27}
+  s.date = %q{2010-01-28}
   s.description = %q{"Uses Memcached API"}
   s.email = %q{alan.mckean@gemstone.com}
   s.extra_rdoc_files = [
@@ -65,10 +65,10 @@ Gem::Specification.new do |s|
      "gemfire-jruby-demo/config/routes.rb",
      "gemfire-jruby-demo/db/seeds.rb",
      "gemfire-jruby-demo/doc/README_FOR_APP",
-     "gemfire-jruby-demo/log/development.log",
      "gemfire-jruby-demo/log/production.log",
      "gemfire-jruby-demo/log/server.log",
      "gemfire-jruby-demo/log/test.log",
+     "gemfire-jruby-demo/my.properties",
      "gemfire-jruby-demo/public/404.html",
      "gemfire-jruby-demo/public/422.html",
      "gemfire-jruby-demo/public/500.html",
