@@ -31,6 +31,7 @@ module ActiveSupport
       end
 
       def initialize(role, options)      
+        @role = role
         # fill the GemFire properties from the options
         check_required_options(role, options)
         # join the distributed system
@@ -47,7 +48,7 @@ module ActiveSupport
       	  # it's a server
           cacheServer = @cache.addCacheServer
           cacheServer.setPort(options['cacheserver-port'])
-#          cacheServer.start
+          cacheServer.start
       	  regionAttributes = get_server_attributes(options)
       	end 
       	@region = @cache.createRegion(options['region-name'], regionAttributes)
@@ -79,10 +80,16 @@ module ActiveSupport
         logger.error("GemfireCache Error (#{e}): #{e.message}")
       end
 
-      # Fetch all of the keys currently in the GemFire cache. Returns a JRuby Array of JRuby objects.
-      def keys
+      # Fetch all of the keys. Optional argument controls whether the keys come from the server orReturns a JRuby Array of JRuby objects.
+      def keys(onServer=true)
+        keySet = nil
         result = []
-        @region.keys.each do |k| result << Marshal.load(k) end
+        if (onServer && @role == 'client') then
+          keySet = @region.keySetOnServer
+        else
+          keySet = @region.keys
+        end
+        keySet.each do |k| result << Marshal.load(k) end
         result
       end
 
