@@ -30,6 +30,92 @@ module ActiveSupport
       	self.instance ||= new(role, options)
       end
 
+      def initialize(role, options)      
+        # fill the GemFire properties from the options
+        check_required_options(role, options)
+        # join the distributed system
+        properties = get_gemfire_properties(role, options)
+        system = DistributedSystem.connect(properties)
+      	# create the cache ... this will read a cache.xml
+      	@cache = CacheFactory.create(system)
+        # there is only one region
+        regionAttributes = nil
+      	if(role == 'client') then
+      	  # it's a client
+      	  regionAttributes = get_client_attributes(options)
+      	else
+      	  # it's a server
+          cacheServer = @cache.addCacheServer
+          cacheServer.setPort(options['cacheserver-port'])
+          cacheServer.start
+      	  regionAttributes = get_server_attributes(options)
+      	end 
+      	@region = @cache.createRegion(options['region-name'], regionAttributes)
+      rescue CacheException => e
+          logger.error("GemfireCache Creation Error (#{e}): #{e.message}")
+    	end
+
+      # Read a value from the GemFire cache. _key_ can be any JRuby object. Returns the value stored at _key_.
+      def read(key)
+        super
+        Marshal.load(@region.get(Marshal.dump(key)))
+      rescue CacheException => e
+          logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Write a value to the GemFire cache. _key_ is used to read the value from the cache and can be any JRuby object. Returns the value that was stored at _key_.
+      def write(key, value)
+        super
+        @region.put(Marshal.dump(key), Marshal.dump(value))
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Delete the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
+      def delete(key)
+        super
+        @region.destroy(key)
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Fetch all of the keys currently in the GemFire cache. Returns a JRuby Array of JRuby objects.
+      def keys
+        @region.keys.to_a
+      end
+
+      # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
+      def exist?(key)
+        if @region.getAttributes.getPoolName then
+          @region.containsKey(key)
+        else
+          @region.containsKeyOnServer(key)
+        end
+      end
+
+      # Delete all entries (key=>value pairs) from the GemFire cache. Returns a JRuby Hash.
+      def clear
+        @region.clear
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Not implemented by GemFire. Raises an exception when called.
+      def increment(key)
+        raise "Not supported by Gemfire"
+      end
+
+      # Not implemented by GemFire. Raises an exception when called.
+      def decrement(key)
+        raise "Not supported by Gemfire"
+      end
+
+      # Not implemented by GemFire. Raises an exception when called.
+      def delete_matched(matcher)
+        raise "Not supported by Gemfire"
+      end
+      
+      private
       def check_required_options(role, options)
         # role must be client or server
         if(role != 'client' && role != 'server') then
@@ -98,91 +184,7 @@ module ActiveSupport
   	    regionAttributes = attributesFactory.create
       end
       
-      def initialize(role, options)      
-        # fill the GemFire properties from the options
-        self.check_required_options(role, options)
-        # join the distributed system
-        properties = get_gemfire_properties(role, options)
-        system = DistributedSystem.connect(properties)
-      	# create the cache ... this will read a cache.xml
-      	@cache = CacheFactory.create(system)
-        # there is only one region
-        regionAttributes = nil
-      	if(role == 'client') then
-      	  # it's a client
-      	  regionAttributes = get_client_attributes(options)
-      	else
-      	  # it's a server
-          cacheServer = @cache.addCacheServer
-          cacheServer.setPort(options['cacheserver-port'])
-          cacheServer.start
-      	  regionAttributes = get_server_attributes(options)
-      	end 
-      	@region = @cache.createRegion(options['region-name'], regionAttributes)
-      rescue CacheException => e
-          logger.error("GemfireCache Creation Error (#{e}): #{e.message}")
-    	end
-
-      # Read a value from the GemFire cache. _key_ can be any JRuby object. Returns the value stored at _key_.
-      def read(key)
-        super
-        @region.get(key)
-      rescue CacheException => e
-          logger.error("GemfireCache Error (#{e}): #{e.message}")
-      end
-
-      # Write a value to the GemFire cache. _key_ is used to read the value from the cache and can be any JRuby object. Returns the value that was stored at _key_.
-      def write(key, value)
-        super
-        @region.put(key, value)
-      rescue CacheException => e
-        logger.error("GemfireCache Error (#{e}): #{e.message}")
-      end
-
-      # Delete the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
-      def delete(key)
-        super
-        @region.destroy(key)
-      rescue CacheException => e
-        logger.error("GemfireCache Error (#{e}): #{e.message}")
-      end
-
-      # Fetch all of the keys currently in the GemFire cache. Returns a JRuby Array of JRuby objects.
-      def keys
-        @region.keys.to_a
-      end
-
-      # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
-      def exist?(key)
-        if @region.getAttributes.getPoolName then
-          @region.containsKey(key)
-        else
-          @region.containsKeyOnServer(key)
-        end
-      end
-
-      # Delete all entries (key=>value pairs) from the GemFire cache. Returns a JRuby Hash.
-      def clear
-        @region.clear
-      rescue CacheException => e
-        logger.error("GemfireCache Error (#{e}): #{e.message}")
-      end
-
-      # Not implemented by GemFire. Raises an exception when called.
-      def increment(key)
-        raise "Not supported by Gemfire"
-      end
-
-      # Not implemented by GemFire. Raises an exception when called.
-      def decrement(key)
-        raise "Not supported by Gemfire"
-      end
-
-      # Not implemented by GemFire. Raises an exception when called.
-      def delete_matched(matcher)
-        raise "Not supported by Gemfire"
-      end
-      
+      public
       def toList(selectResults)
       	results = []
       	iterator = selectResults.iterator
@@ -202,14 +204,14 @@ module ActiveSupport
         found
       end
 
-      def query(queryString)
-        queryService = @region.getAttributes.getPoolName ? PoolManager.find(@region).getQueryService : @cache.getQueryService
+      public
+      # Query the cache. Optional serverData arg allows querying local client cache
+      def query(queryString, serverData=true)
+        queryService = @region.getAttributes.getPoolName && serverData ? PoolManager.find(@region).getQueryService : @cache.getQueryService
         query = queryService.newQuery(queryString)
         result = query.execute
         selectResults?(result) ? toList(result) : result
       end
-      
-      private :check_required_options, :get_gemfire_properties, :get_server_attributes, :get_client_attributes,:toList, :selectResults?
     end
   end
 end
