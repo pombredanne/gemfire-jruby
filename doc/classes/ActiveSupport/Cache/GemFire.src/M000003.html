@@ -10,13 +10,12 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 44</span>
+  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 127</span>
       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">key</span>)
         <span class="ruby-keyword kw">super</span>
         <span class="ruby-ivar">@region</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">key</span>)
       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">CacheException</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
           <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-node">&quot;GemfireCache Error (#{e}): #{e.message}&quot;</span>)
-          <span class="ruby-keyword kw">false</span>
       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

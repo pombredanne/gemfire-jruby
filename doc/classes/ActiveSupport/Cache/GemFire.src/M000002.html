@@ -10,18 +10,30 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 30</span>
-      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">hashOfGemFireProperties</span>)
-        <span class="ruby-identifier">properties</span> = <span class="ruby-constant">Properties</span>.<span class="ruby-identifier">new</span>
-        <span class="ruby-identifier">hashOfGemFireProperties</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
-          <span class="ruby-identifier">properties</span>.<span class="ruby-identifier">setProperty</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
-        <span class="ruby-keyword kw">end</span>
+  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 101</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">role</span>, <span class="ruby-identifier">options</span>)      
+        <span class="ruby-comment cmt"># fill the GemFire properties from the options</span>
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">check_required_options</span>(<span class="ruby-identifier">role</span>, <span class="ruby-identifier">options</span>)
+        <span class="ruby-comment cmt"># join the distributed system</span>
+        <span class="ruby-identifier">properties</span> = <span class="ruby-identifier">get_gemfire_properties</span>(<span class="ruby-identifier">role</span>, <span class="ruby-identifier">options</span>)
         <span class="ruby-identifier">system</span> = <span class="ruby-constant">DistributedSystem</span>.<span class="ruby-identifier">connect</span>(<span class="ruby-identifier">properties</span>)
-        <span class="ruby-identifier">cache</span> = <span class="ruby-constant">CacheFactory</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">system</span>)
-        <span class="ruby-ivar">@region</span> = <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">getRegion</span>(<span class="ruby-constant">System</span>.<span class="ruby-identifier">getProperty</span>(<span class="ruby-value str">&quot;cachingRegionName&quot;</span>) <span class="ruby-operator">||</span> <span class="ruby-value str">&quot;default&quot;</span>)
+        <span class="ruby-comment cmt"># create the cache ... this will read a cache.xml</span>
+        <span class="ruby-ivar">@cache</span> = <span class="ruby-constant">CacheFactory</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">system</span>)
+        <span class="ruby-comment cmt"># there is only one region</span>
+        <span class="ruby-identifier">regionAttributes</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">role</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'client'</span>) <span class="ruby-keyword kw">then</span>
+          <span class="ruby-comment cmt"># it's a client</span>
+          <span class="ruby-identifier">regionAttributes</span> = <span class="ruby-identifier">get_client_attributes</span>(<span class="ruby-identifier">options</span>)
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-comment cmt"># it's a server</span>
+          <span class="ruby-identifier">cacheServer</span> = <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">addCacheServer</span>
+          <span class="ruby-identifier">cacheServer</span>.<span class="ruby-identifier">setPort</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value str">'cacheserver-port'</span>])
+          <span class="ruby-identifier">cacheServer</span>.<span class="ruby-identifier">start</span>
+          <span class="ruby-identifier">regionAttributes</span> = <span class="ruby-identifier">get_server_attributes</span>(<span class="ruby-identifier">options</span>)
+        <span class="ruby-keyword kw">end</span> 
+        <span class="ruby-ivar">@region</span> = <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">createRegion</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value str">'region-name'</span>], <span class="ruby-identifier">regionAttributes</span>)
       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">CacheException</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
           <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-node">&quot;GemfireCache Creation Error (#{e}): #{e.message}&quot;</span>)
-          <span class="ruby-keyword kw">false</span>
         <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

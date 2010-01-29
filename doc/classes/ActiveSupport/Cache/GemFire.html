@@ -103,6 +103,7 @@ href="GemFire.html">GemFire</a> cache.
       <a href="#M000009">increment</a>&nbsp;&nbsp;
       <a href="#M000006">keys</a>&nbsp;&nbsp;
       <a href="#M000002">new</a>&nbsp;&nbsp;
+      <a href="#M000012">query</a>&nbsp;&nbsp;
       <a href="#M000003">read</a>&nbsp;&nbsp;
       <a href="#M000004">write</a>&nbsp;&nbsp;
       </div>
@@ -151,7 +152,7 @@ href="GemFire.html">GemFire</a> cache.
         <div class="method-heading">
           <a href="GemFire.src/M000001.html" target="Code" class="method-signature"
             onclick="popupCode('GemFire.src/M000001.html');return false;">
-          <span class="method-name">getInstance</span><span class="method-args">(hashOfGemFireProperties)</span>
+          <span class="method-name">getInstance</span><span class="method-args">(role, options={})</span>
           </a>
         </div>
       
@@ -164,8 +165,8 @@ href="GemFire.html">GemFire</a> instance and to launch <a
 href="GemFire.html">GemFire</a>.
 </p>
 <pre>
-  There is an optional Hash that you can use to override any GemFire properties'.
-  For example, GemFire.getInstance('locators' =&gt; 'localhost[10355]', 'mcast-port' =&gt; '0')
+  The required Hash is used to configure clients and servers.
+  For example, GemFire.getInstance('server', {'region-name'=&gt; 'data', 'locators' =&gt; 'localhost:10355'})
 </pre>
 <p>
 Since it is a Singleton, successive calls to <a
@@ -181,7 +182,7 @@ single instance that was instantiated by the first call.
         <div class="method-heading">
           <a href="GemFire.src/M000002.html" target="Code" class="method-signature"
             onclick="popupCode('GemFire.src/M000002.html');return false;">
-          <span class="method-name">new</span><span class="method-args">(hashOfGemFireProperties)</span>
+          <span class="method-name">new</span><span class="method-args">(role, options)</span>
           </a>
         </div>
       
@@ -316,6 +317,20 @@ Fetch all of the <a href="GemFire.html#M000006">keys</a> currently in the
 <a href="GemFire.html">GemFire</a> cache. Returns a JRuby Array of JRuby
 objects.
 </p>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="GemFire.src/M000012.html" target="Code" class="method-signature"
+            onclick="popupCode('GemFire.src/M000012.html');return false;">
+          <span class="method-name">query</span><span class="method-args">(queryString)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
         </div>
       </div>
 

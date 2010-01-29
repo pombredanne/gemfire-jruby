@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{gemfire-jruby}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alan McKean"]
-  s.date = %q{2010-01-28}
+  s.date = %q{2010-01-29}
   s.description = %q{"Uses Memcached API"}
   s.email = %q{alan.mckean@gemstone.com}
   s.extra_rdoc_files = [
@@ -45,54 +45,6 @@ Gem::Specification.new do |s|
      "doc/fr_method_index.html",
      "doc/index.html",
      "doc/rdoc-style.css",
-     "gemfire-jruby-demo/README",
-     "gemfire-jruby-demo/Rakefile",
-     "gemfire-jruby-demo/app/controllers/application_controller.rb",
-     "gemfire-jruby-demo/app/helpers/application_helper.rb",
-     "gemfire-jruby-demo/cache.xml",
-     "gemfire-jruby-demo/config/boot.rb",
-     "gemfire-jruby-demo/config/database.yml",
-     "gemfire-jruby-demo/config/environment.rb",
-     "gemfire-jruby-demo/config/environments/development.rb",
-     "gemfire-jruby-demo/config/environments/production.rb",
-     "gemfire-jruby-demo/config/environments/test.rb",
-     "gemfire-jruby-demo/config/initializers/backtrace_silencers.rb",
-     "gemfire-jruby-demo/config/initializers/inflections.rb",
-     "gemfire-jruby-demo/config/initializers/mime_types.rb",
-     "gemfire-jruby-demo/config/initializers/new_rails_defaults.rb",
-     "gemfire-jruby-demo/config/initializers/session_store.rb",
-     "gemfire-jruby-demo/config/locales/en.yml",
-     "gemfire-jruby-demo/config/routes.rb",
-     "gemfire-jruby-demo/db/seeds.rb",
-     "gemfire-jruby-demo/doc/README_FOR_APP",
-     "gemfire-jruby-demo/log/production.log",
-     "gemfire-jruby-demo/log/server.log",
-     "gemfire-jruby-demo/log/test.log",
-     "gemfire-jruby-demo/my.properties",
-     "gemfire-jruby-demo/public/404.html",
-     "gemfire-jruby-demo/public/422.html",
-     "gemfire-jruby-demo/public/500.html",
-     "gemfire-jruby-demo/public/favicon.ico",
-     "gemfire-jruby-demo/public/images/rails.png",
-     "gemfire-jruby-demo/public/index.html",
-     "gemfire-jruby-demo/public/javascripts/application.js",
-     "gemfire-jruby-demo/public/javascripts/controls.js",
-     "gemfire-jruby-demo/public/javascripts/dragdrop.js",
-     "gemfire-jruby-demo/public/javascripts/effects.js",
-     "gemfire-jruby-demo/public/javascripts/prototype.js",
-     "gemfire-jruby-demo/public/robots.txt",
-     "gemfire-jruby-demo/script/about",
-     "gemfire-jruby-demo/script/console",
-     "gemfire-jruby-demo/script/dbconsole",
-     "gemfire-jruby-demo/script/destroy",
-     "gemfire-jruby-demo/script/generate",
-     "gemfire-jruby-demo/script/performance/benchmarker",
-     "gemfire-jruby-demo/script/performance/profiler",
-     "gemfire-jruby-demo/script/plugin",
-     "gemfire-jruby-demo/script/runner",
-     "gemfire-jruby-demo/script/server",
-     "gemfire-jruby-demo/test/performance/browsing_test.rb",
-     "gemfire-jruby-demo/test/test_helper.rb",
      "gemfire-jruby.gemspec",
      "lib/gemfire-jruby.rb",
      "test/helper.rb",

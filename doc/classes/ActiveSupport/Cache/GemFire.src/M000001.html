@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 26</span>
-        <span class="ruby-keyword kw">def</span> <span class="ruby-constant">GemFire</span>.<span class="ruby-identifier">getInstance</span>(<span class="ruby-identifier">hashOfGemFireProperties</span>)
-        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">new</span>(<span class="ruby-identifier">hashOfGemFireProperties</span>={})
+  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 29</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-constant">GemFire</span>.<span class="ruby-identifier">getInstance</span>(<span class="ruby-identifier">role</span>, <span class="ruby-identifier">options</span>={})
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">new</span>(<span class="ruby-identifier">role</span>, <span class="ruby-identifier">options</span>)
       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

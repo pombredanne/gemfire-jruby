@@ -10,10 +10,13 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 77</span>
+  <pre><span class="ruby-comment cmt"># File lib/gemfire-jruby.rb, line 156</span>
       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">key</span>)
-        <span class="ruby-keyword kw">super</span>
-        <span class="ruby-ivar">@region</span>.<span class="ruby-identifier">containsKeyOnServer</span>(<span class="ruby-identifier">key</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@region</span>.<span class="ruby-identifier">getAttributes</span>.<span class="ruby-identifier">getPoolName</span> <span class="ruby-keyword kw">then</span>
+          <span class="ruby-ivar">@region</span>.<span class="ruby-identifier">containsKey</span>(<span class="ruby-identifier">key</span>)
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-ivar">@region</span>.<span class="ruby-identifier">containsKeyOnServer</span>(<span class="ruby-identifier">key</span>)
+        <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
