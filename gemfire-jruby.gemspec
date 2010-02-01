@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{gemfire-jruby}
-  s.version = "0.0.7"
+  s.version = "0.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alan McKean"]
@@ -49,7 +49,9 @@ Gem::Specification.new do |s|
      "doc/index.html",
      "doc/rdoc-style.css",
      "gemfire-jruby.gemspec",
+     "lib/examples.rb",
      "lib/gemfire-jruby.rb",
+     "server.rb",
      "test/helper.rb",
      "test/test_gemfire-jruby.rb"
   ]
