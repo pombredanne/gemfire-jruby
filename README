@@ -27,3 +27,4 @@ require 'rubygems'
 require 'lib/gemfire-jruby'
 client = ActiveSupport::Cache::GemFire.getInstance('client', {'locators'=>'localhost:10355', 'region-name'=>'data'})
 
+

@@ -48,7 +48,7 @@ module ActiveSupport
       	  # it's a server
           cacheServer = @cache.addCacheServer
           cacheServer.setPort(options['cacheserver-port'])
-          cacheServer.start
+#          cacheServer.start
       	  regionAttributes = get_server_attributes(options)
       	end 
       	@region = @cache.createRegion(options['region-name'], regionAttributes)
@@ -56,26 +56,52 @@ module ActiveSupport
           logger.error("GemfireCache Creation Error (#{e}): #{e.message}")
     	end
 
-      # Read a value from the GemFire cache. _key_ can be any JRuby object. Returns the value stored at _key_.
-      def read(key)
-        super
-        Marshal.load(@region.get(Marshal.dump(key)))
-      rescue CacheException => e
-          logger.error("GemfireCache Error (#{e}): #{e.message}")
-      end
-
-      # Write a value to the GemFire cache. _key_ is used to read the value from the cache and can be any JRuby object. Returns the value that was stored at _key_.
-      def write(key, value)
-        super
-        @region.put(Marshal.dump(key), Marshal.dump(value))
+      # GemFire api
+      def create(key, value)
+        @region.create(key.to_yaml, value.to_yaml)
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
       end
 
-      # Delete the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
+      def put(key, value)
+        @region.put(key.to_yaml, value.to_yaml)
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      def invalidate(key)
+        @region.invalidate(key.to_yaml)
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      #  Destroy the entry stored in the GemFire cache at _key_. _key_ can be any JRuby object. Returns the value that was deleted.
+      def destroy(key)
+        @region.destroy(key.to_yaml)
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Read a value from the GemFire cache. _key_ can be any JRuby object. Returns the value stored at _key_.
+      def read(key)
+        super
+        YAML::load(@region.get(key.to_yaml))
+      rescue CacheException => e
+          logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Alias for put(key, value) ... for compatibility with memcached
+      def write(key, value)
+        super
+        @region.put(key.to_yaml, value.to_yaml)
+      rescue CacheException => e
+        logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+
+      # Alias for destroy(key) ... for compatibility with memcached
       def delete(key)
         super
-        @region.destroy(Marshal.dump(key))
+        @region.destroy(key.to_yaml)
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
       end
@@ -89,16 +115,16 @@ module ActiveSupport
         else
           keySet = @region.keys
         end
-        keySet.each do |k| result << Marshal.load(k) end
+        keySet.each do |k| result << YAML::load(k) end
         result
       end
 
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
         if @region.getAttributes.getPoolName then
-          @region.containsKey(Marshal.dump(key))
+          @region.containsKey(key.to_yaml)
         else
-          @region.containsKeyOnServer(Marshal.dump(key))
+          @region.containsKeyOnServer(key.to_yaml)
         end
       end
 
@@ -107,6 +133,29 @@ module ActiveSupport
         @region.clear
       rescue CacheException => e
         logger.error("GemfireCache Error (#{e}): #{e.message}")
+      end
+      
+      # Add a CacheListener to the cache region
+      def addListener(cacheListener)
+        @region.getAttributesMutator.addCacheListener(cacheListener)
+      end
+
+      # Install a CacheWriter into the client's cache region
+      def setWriter(cacheWriter)
+        if @role == 'server' then
+          @region.getAttributesMutator.setCacheWriter(cacheWriter)
+        else
+          raise 'Only servers can have CacheWriters'
+        end
+      end
+
+      # Install a CacheLoader into the cache region
+      def setLoader(cacheLoader)
+        if @role == 'server' then
+          @region.getAttributesMutator.setCacheLoader(cacheLoader)
+        else
+          raise 'Only servers can have CacheLoaders'
+        end
       end
 
       # Not implemented by GemFire. Raises an exception when called.
@@ -146,7 +195,8 @@ module ActiveSupport
         properties = Properties.new
         properties.setProperty('mcast-port', '0')
         options.each do |key, value|
-          properties.setProperty(key, value) unless ((key == 'cacheserver-port') || (key == 'region-name') || (key == 'locators' && role == 'client'))
+          puts key
+          properties.setProperty(key, value) unless ((key == 'cacheserver-port') || (key == 'region-name') || (key == 'caching-enabled') || (key == 'locators' && role == 'client'))
         end
         properties
       end
@@ -214,3 +264,59 @@ module ActiveSupport
     end
   end
 end
+
+class GemFireCacher
+  def initialize(locator, regionName="data", cachingOn=false)
+    raise "GemFireCacher is an abstract class. Instantiate either a GemFireClient or a GemFireServer"
+  end
+  
+  def read(key)
+    @gemfire.read(key)
+  end
+  def write(key, value)
+    @gemfire.write(key, value)
+  end
+  def delete(key)
+    @gemfire.delete(key)
+  end
+  def exist?(key)
+    @gemfire.exist?(key)
+  end
+  def keys(onServer=true)
+    @gemfire.keys(onServer)
+  end
+  def clear
+    @gemfire.clear
+  end
+  def increment(key)
+    @gemfire.increment(key)
+  end
+  def decrement(key)
+    @gemfire.decrement(key)
+  end
+  def delete_matched(matcher)
+    @gemfire.delete_matched(matcher)
+  end  
+  def addListener(cacheListener)
+    @gemfire.addListener(cacheListener)
+  end
+  def setWriter(cacheWriter)
+    @gemfire.setWriter(cacheWriter)
+  end
+  def setLoader(cacheLoader)
+    @gemfire.setLoader(cacheLoader)
+  end
+end
+
+class GemFireServer < GemFireCacher
+  def initialize(locator, regionName="data", cacheServerPort=40404)
+    @gemfire = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>locator, 'region-name'=>regionName, 'cacheserver-port'=>cacheServerPort})
+  end  
+end
+
+class GemFireClient < GemFireCacher
+  def initialize(locator, regionName="data", cachingOn=false)
+    @gemfire = ActiveSupport::Cache::GemFire.getInstance('client', {'locators'=>locator, 'region-name'=>regionName, 'caching-enabled'=>cachingOn.to_s})
+  end  
+end
+
