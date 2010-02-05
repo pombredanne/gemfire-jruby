@@ -48,7 +48,7 @@ module ActiveSupport
       	  # it's a server
           cacheServer = @cache.addCacheServer
           cacheServer.setPort(options['cacheserver-port'])
-#          cacheServer.start
+          cacheServer.start
       	  regionAttributes = get_server_attributes(options)
       	end 
       	@region = @cache.createRegion(options['region-name'], regionAttributes)
