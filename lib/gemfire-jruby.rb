@@ -110,10 +110,10 @@ module ActiveSupport
       def keys(onServer=true)
         keySet = nil
         result = []
-        if (onServer && @role == 'client') then
+        if (onServer && (@role == 'client')) then
           keySet = @region.keySetOnServer
         else
-          keySet = @region.keys
+          keySet = @region.keySet
         end
         keySet.each do |k| result << YAML::load(k) end
         result
@@ -122,9 +122,9 @@ module ActiveSupport
       # Check if there is an entry accessible by _key_ in the GemFire cache. Returns a boolean.
       def exist?(key)
         if @region.getAttributes.getPoolName then
-          @region.containsKey(key.to_yaml)
-        else
           @region.containsKeyOnServer(key.to_yaml)
+        else
+          @region.containsKey(key.to_yaml)
         end
       end
 
@@ -135,9 +135,13 @@ module ActiveSupport
         logger.error("GemfireCache Error (#{e}): #{e.message}")
       end
       
-      # Add a CacheListener to the cache region
+      # Add and remove CacheListeners to the cache region
       def addListener(cacheListener)
         @region.getAttributesMutator.addCacheListener(cacheListener)
+      end
+
+      def removeListener(cacheListener)
+        @region.getAttributesMutator.removeCacheListener(cacheListener)
       end
 
       # Install a CacheWriter into the client's cache region
@@ -270,6 +274,30 @@ class GemFireCacher
     raise "GemFireCacher is an abstract class. Instantiate either a GemFireClient or a GemFireServer"
   end
   
+  # GemFire api
+  def create(key, value)
+    @gemfire.create(key, value)
+  end
+  def put(key, value)
+    @gemfire.put(key, value)
+  end
+  def invalidate(key)
+    @gemfire.invalidate(key)
+  end
+  def destroy(key)
+    @gemfire.destroy(key)
+  end
+
+  # Both servers and clients can have CacheListeners
+  def addListener(cacheListener)
+    @gemfire.addListener(cacheListener)
+  end
+
+  def removeListener(cacheListener)
+    @gemfire.removeListener(cacheListener)
+  end
+
+  # Memcached api
   def read(key)
     @gemfire.read(key)
   end
@@ -296,15 +324,6 @@ class GemFireCacher
   end
   def delete_matched(matcher)
     @gemfire.delete_matched(matcher)
-  end  
-  def addListener(cacheListener)
-    @gemfire.addListener(cacheListener)
-  end
-  def setWriter(cacheWriter)
-    @gemfire.setWriter(cacheWriter)
-  end
-  def setLoader(cacheLoader)
-    @gemfire.setLoader(cacheLoader)
   end
 end
 
@@ -312,6 +331,13 @@ class GemFireServer < GemFireCacher
   def initialize(locator, regionName="data", cacheServerPort=40404)
     @gemfire = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>locator, 'region-name'=>regionName, 'cacheserver-port'=>cacheServerPort})
   end  
+  # Only servers can have CacheLoaders and CacheWriters
+  def setWriter(cacheWriter)
+    @gemfire.setWriter(cacheWriter)
+  end
+  def setLoader(cacheLoader)
+    @gemfire.setLoader(cacheLoader)
+  end
 end
 
 class GemFireClient < GemFireCacher
