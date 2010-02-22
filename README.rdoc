@@ -1,17 +1,16 @@
 = gemfire-jruby
 
-Description goes here.
+The gemfire-jruby gem provides a Ruby interface to GemStone Systems' GemFire cache. It can be used to embed a GemFire cache in a JRuby VM or to embed a GemFire client in the JRuby VM ... the client transparently forwards all operations to a running GemFire server on a remote node. The features that are supported by the gemfire-jruby gem are:
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+- running as either a GemFire server or a GemFire client
+- listening for operation events in either client or server mode
+- transparently loading or writing cache data to an external store (server mode only)
+- choosing to keep data on the client or to keep data on the server only
+- choosing to partition data across the servers or to replication all data on each server
+- configurable parameters such as host and port for the server location
+- easy to use, e.g., create a client with GemFire.new('client') of a server with GemFire.new('server')
+- one cache region ... additional cache regions can be declared in XML
 
 == Copyright
 
-Copyright (c) 2010 amckean. See LICENSE for details.
+Copyright (c) 2010 GemStone Systems, Inc. See LICENSE for details.
