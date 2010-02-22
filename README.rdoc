@@ -6,9 +6,11 @@ The gemfire-jruby gem provides a Ruby interface to GemStone Systems' GemFire cac
 - listening for operation events in either client or server mode
 - transparently loading or writing cache data to an external store (server mode only)
 - choosing to keep data on the client or to keep data on the server only
-- choosing to partition data across the servers or to replication all data on each server
+- choosing to partition data across the servers or to replicate all data on each server
 - configurable parameters such as host and port for the server location
-- easy to use, e.g., create a client with GemFire.new('client') of a server with GemFire.new('server')
+- easy to use, e.g., create a client with GemFire.new('client') or a server with GemFire.new('server')
+- GemFire operations: create(key, value), put(key, value), get(key), invalidate(key), destroy(key), clear
+- memcached api operations: read(key), write(key, value), delete(key), exist?(key), keys
 - one cache region ... additional cache regions can be declared in XML
 
 == Copyright
