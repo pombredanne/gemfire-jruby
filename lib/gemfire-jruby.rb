@@ -136,16 +136,16 @@ module ActiveSupport
       end
       
       # Add and remove CacheListeners to the cache region
-      def addListener(cacheListener)
+      def add_listener(cacheListener)
         @region.getAttributesMutator.addCacheListener(cacheListener)
       end
 
-      def removeListener(cacheListener)
+      def remove_istener(cacheListener)
         @region.getAttributesMutator.removeCacheListener(cacheListener)
       end
 
       # Install a CacheWriter into the client's cache region
-      def setWriter(cacheWriter)
+      def set_writer(cacheWriter)
         if @role == 'server' then
           @region.getAttributesMutator.setCacheWriter(cacheWriter)
         else
@@ -154,7 +154,7 @@ module ActiveSupport
       end
 
       # Install a CacheLoader into the cache region
-      def setLoader(cacheLoader)
+      def set_loader(cacheLoader)
         if @role == 'server' then
           @region.getAttributesMutator.setCacheLoader(cacheLoader)
         else
@@ -270,9 +270,13 @@ module ActiveSupport
 end
 
 class GemFireCacher
-  def initialize(locator, regionName="data", cachingOn=false)
-    raise "GemFireCacher is an abstract class. Instantiate either a GemFireClient or a GemFireServer"
-  end
+  attr_reader :memberType
+  def initialize(locator, regionName="data", cacheServerPort=40404)
+    @gemfire = ActiveSupport::Cache::GemFire.getInstance(self.memberType, {'locators'=>locator, 'region-name'=>regionName, 'cacheserver-port'=>cacheServerPort})
+  end  
+#  def initialize(locator, regionName="data", cachingOn=false)
+#    raise "GemFireCacher is an abstract class. Instantiate either a GemFireClient or a GemFireServer"
+#  end
   
   # GemFire api
   def create(key, value)
@@ -289,14 +293,14 @@ class GemFireCacher
   end
 
   # Both servers and clients can have CacheListeners
-  def addListener(cacheListener)
-    @gemfire.addListener(cacheListener)
+  def add_listener(cacheListener)
+    @gemfire.add_listener(cacheListener)
   end
 
-  def removeListener(cacheListener)
-    @gemfire.removeListener(cacheListener)
+  def remove_listener(cacheListener)
+    @gemfire.remove_listener(cacheListener)
   end
-
+  
   # Memcached api
   def read(key)
     @gemfire.read(key)
@@ -329,20 +333,26 @@ end
 
 class GemFireServer < GemFireCacher
   def initialize(locator, regionName="data", cacheServerPort=40404)
-    @gemfire = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>locator, 'region-name'=>regionName, 'cacheserver-port'=>cacheServerPort})
+    puts 'Initializing memberType'
+    @memberType = 'server'
+    puts 'MemberType = ' + @memberType
+    super(locator, regionName, cacheServerPort)
+#    @gemfire = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>locator, 'region-name'=>regionName, 'cacheserver-port'=>cacheServerPort})
   end  
   # Only servers can have CacheLoaders and CacheWriters
-  def setWriter(cacheWriter)
-    @gemfire.setWriter(cacheWriter)
+  def set_writer(cacheWriter)
+    @gemfire.set_writer(cacheWriter)
   end
-  def setLoader(cacheLoader)
-    @gemfire.setLoader(cacheLoader)
+  def set_loader(cacheLoader)
+    @gemfire.set_loader(cacheLoader)
   end
 end
 
 class GemFireClient < GemFireCacher
   def initialize(locator, regionName="data", cachingOn=false)
-    @gemfire = ActiveSupport::Cache::GemFire.getInstance('client', {'locators'=>locator, 'region-name'=>regionName, 'caching-enabled'=>cachingOn.to_s})
+    memberType = 'client'
+    super(locator, regionName, cacheServerPort)
+#    @gemfire = ActiveSupport::Cache::GemFire.getInstance('client', {'locators'=>locator, 'region-name'=>regionName, 'caching-enabled'=>cachingOn.to_s})
   end  
 end
 
