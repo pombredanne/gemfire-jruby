@@ -1,19 +1,28 @@
-Role must be specified as either 'client' or 'server'
+Note: For a more complete tutorial on installing and running the gemfire-jruby gem, see doc/gemfire-jruby.pdf.
+
+GemFire may be used in either client or server mode. In server mode, the GemFire cache is embedded in the same memory space as the running JRuby VM. When running Rails, the cache is in the memory space of the Rails application. When using client mode, the GemFire cache is effectively in the memory space of another VM and the JRuby VM is 'connected' to it. Data is typically sent and stored in the remote 'server' cache and no data is kept in the client. All puts and gets that happen in the client transparently forward the operation to the server and store or retrieve the data from the server.
+
+Required Creation Arguments
+
+When instantiating the GemFire instance, the role must be specified as either 'client' or 'server'
 ActiveSupport::Cache::GemFire.getInstance('server', {...})
 
-Universal Required Options
-These options are required for both clients and servers. The 'locators' is used by servers to join its peers. It is used by a client's pool to connect to the server tier.
+The 'locators' is used by servers to join its peers and is used by a client to connect to the server tier.
 
-	'region-name' == nameString
 	'locators' == addressOrHostname:portNumber
 
 Example:
-ActiveSupport::Cache::GemFire.getInstance('server', {'region-name'=>'data, 'locators=>localhost:10355, , ...})
+ActiveSupport::Cache::GemFire.getInstance('server', 'locators=>localhost:10355')
 
 Client Options
-	'caching-enabled' => 'true' || 'false' ... default is 'false'
+	'region-name' == nameString
+	'caching-enabled' => true || false ... default is 'false'
+
+Example:
+ActiveSupport::Cache::GemFire.getInstance('client', {'locators=>localhost:10355', 'region-name'=>'data', 'caching-enabled'=>true})
 
 Server Options
+	'region-name' == nameString
 	'cacheserver-port'=> 40404 					# required			
 	'data-policy' => 'partition' || 'replicate' # default is replicate
 	'redundancy-level' => '0..3' 				# applicable only if 'data-policy' is 'partition'
@@ -21,7 +30,7 @@ Server Options
 Example of Creating a Server
 require 'rubygems'
 require 'lib/gemfire-jruby'
-server = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>'localhost:10355', 'region-name'=>'data', 'cacheserver-port'=>40404})
+server = ActiveSupport::Cache::GemFire.getInstance('server', {'locators'=>'localhost:10355', 'region-name'=>'data', 'cacheserver-port'=>40404, data-policy'=>'partition', 'cacheserver-port'=>40405})
 
 require 'rubygems'
 require 'lib/gemfire-jruby'
